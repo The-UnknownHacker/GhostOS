@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhostEdit - GhostOS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            color: #00ff9d;
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-toolbar {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .toolbar-button {
+            background: rgba(0,255,157,0.1);
+            border: 1px solid #00ff9d;
+            color: #00ff9d;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .toolbar-button:hover {
+            background: rgba(0,255,157,0.2);
+        }
+
+        .editor-container {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+        }
+
+        .line-numbers {
+            width: 40px;
+            padding: 20px 5px;
+            background: rgba(0,0,0,0.2);
+            color: rgba(0,255,157,0.5);
+            text-align: right;
+            user-select: none;
+            overflow: hidden;
+            white-space: pre;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        #editor {
+            flex-grow: 1;
+            background: transparent;
+            color: #00ff9d;
+            border: none;
+            resize: none;
+            padding: 20px;
+            padding-left: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        #editor::selection {
+            background: rgba(0,255,157,0.3);
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+        
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-toolbar">
+        <button class="toolbar-button" onclick="newFile()">New</button>
+        <button class="toolbar-button" onclick="openFile()">Open</button>
+        <button class="toolbar-button" onclick="saveFile()">Save</button>
+        <input type="file" id="fileInput" style="display: none" onchange="handleFileSelect(event)">
+    </div>
+    <div class="editor-container">
+        <div class="line-numbers" id="lineNumbers"></div>
+        <textarea id="editor" spellcheck="false"></textarea>
+    </div>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const lineNumbers = document.getElementById('lineNumbers');
+
+        function updateLineNumbers() {
+            const lines = editor.value.split('\n').length;
+            lineNumbers.innerText = Array(lines)
+                .fill(0)
+                .map((_, i) => i + 1)
+                .join('\n');
+        }
+
+        editor.addEventListener('input', updateLineNumbers);
+        editor.addEventListener('scroll', () => {
+            lineNumbers.scrollTop = editor.scrollTop;
+        });
+
+        function newFile() {
+            editor.value = '';
+            updateLineNumbers();
+        }
+
+        function openFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editor.value = e.target.result;
+                    updateLineNumbers();
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function saveFile() {
+            const content = editor.value;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'untitled.txt';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize line numbers
+        updateLineNumbers();
+    </script>
+</body>
+</html> 

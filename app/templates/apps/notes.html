@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes - GhostOS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff9d;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-container {
+            flex-grow: 1;
+            display: flex;
+            gap: 20px;
+        }
+
+        .notes-list {
+            width: 200px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .note-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0,255,157,0.1);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .note-item:hover {
+            background: rgba(0,255,157,0.2);
+        }
+
+        .note-editor {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .note-title {
+            background: transparent;
+            border: 1px solid #00ff9d;
+            color: #00ff9d;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1.2em;
+        }
+
+        .note-content {
+            flex-grow: 1;
+            background: transparent;
+            border: 1px solid #00ff9d;
+            color: #00ff9d;
+            padding: 10px;
+            border-radius: 5px;
+            resize: none;
+            font-family: inherit;
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+        
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="notes-container">
+        <div class="notes-list">
+            <div class="note-item">New Note</div>
+            <div class="note-item">Shopping List</div>
+            <div class="note-item">Todo</div>
+        </div>
+        <div class="note-editor">
+            <input type="text" class="note-title" placeholder="Title">
+            <textarea class="note-content" placeholder="Start typing..."></textarea>
+        </div>
+    </div>
+</body>
+</html> 

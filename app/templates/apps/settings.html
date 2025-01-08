@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - GhostOS</title>
+    <style>
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            color: #00ff9d;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .settings-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .settings-sidebar {
+            width: 200px;
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+        }
+
+        .settings-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .settings-category {
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .settings-category:hover {
+            background: rgba(0,255,157,0.1);
+        }
+
+        .settings-category.active {
+            background: rgba(0,255,157,0.2);
+        }
+
+        .settings-section {
+            display: none;
+            margin-bottom: 30px;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .setting-item {
+            margin-bottom: 20px;
+        }
+
+        .setting-item h3 {
+            margin: 0 0 10px 0;
+        }
+
+        .setting-item p {
+            margin: 0 0 10px 0;
+            opacity: 0.7;
+        }
+
+        .color-picker {
+            background: transparent;
+            border: 1px solid #00ff9d;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.3);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #00ff9d;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: rgba(0,255,157,0.3);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        select {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid #00ff9d;
+            color: #00ff9d;
+            padding: 5px 10px;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        option {
+            background: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <div class="settings-sidebar">
+            <div class="settings-category active" data-section="appearance">Appearance</div>
+            <div class="settings-category" data-section="desktop">Desktop</div>
+            <div class="settings-category" data-section="dock">Dock</div>
+            <div class="settings-category" data-section="sound">Sound</div>
+            <div class="settings-category" data-section="privacy">Privacy</div>
+            <div class="settings-category" data-section="about">About</div>
+        </div>
+        
+        <div class="settings-content">
+            <div class="settings-section active" id="appearance">
+                <h2>Appearance</h2>
+                
+                <div class="setting-item">
+                    <h3>Theme</h3>
+                    <p>Choose your system theme</p>
+                    <select id="theme-select">
+                        <option value="dark">Dark</option>
+                        <option value="light">Light</option>
+                        <option value="auto">Auto</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <h3>Accent Color</h3>
+                    <p>Choose your system accent color</p>
+                    <input type="color" class="color-picker" id="accent-color" value="#00ff9d">
+                </div>
+
+                <div class="setting-item">
+                    <h3>Transparency Effects</h3>
+                    <p>Enable or disable transparency effects</p>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="transparency" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section" id="desktop">
+                <h2>Desktop</h2>
+                
+                <div class="setting-item">
+                    <h3>Background Animation</h3>
+                    <p>Enable or disable desktop background animation</p>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="bg-animation" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <h3>Window Animations</h3>
+                    <p>Enable or disable window animations</p>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="window-animation" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section" id="dock">
+                <h2>Dock</h2>
+                
+                <div class="setting-item">
+                    <h3>Dock Position</h3>
+                    <p>Choose where the dock appears</p>
+                    <select id="dock-position">
+                        <option value="bottom">Bottom</option>
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <h3>Dock Size</h3>
+                    <p>Adjust the size of dock icons</p>
+                    <input type="range" min="32" max="128" value="48" id="dock-size">
+                </div>
+            </div>
+
+            <div class="settings-section" id="sound">
+                <h2>Sound</h2>
+                
+                <div class="setting-item">
+                    <h3>System Sounds</h3>
+                    <p>Enable or disable system sound effects</p>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="system-sounds" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <h3>Startup Sound</h3>
+                    <p>Play a sound when GhostOS starts</p>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="startup-sound">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section" id="privacy">
+                <h2>Privacy</h2>
+                
+                <div class="setting-item">
+                    <h3>Analytics</h3>
+                    <p>Help improve GhostOS by sending anonymous usage data</p>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="analytics">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-section" id="about">
+                <h2>About GhostOS</h2>
+                
+                <div class="setting-item">
+                    <h3>Version</h3>
+                    <p>GhostOS 1.0.0</p>
+                </div>
+
+                <div class="setting-item">
+                    <h3>Build</h3>
+                    <p>2024.1.1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle settings navigation
+        document.querySelectorAll('.settings-category').forEach(category => {
+            category.addEventListener('click', () => {
+                // Update active category
+                document.querySelectorAll('.settings-category').forEach(c => c.classList.remove('active'));
+                category.classList.add('active');
+                
+                // Show corresponding section
+                const sectionId = category.dataset.section;
+                document.querySelectorAll('.settings-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Handle settings changes
+        const settings = {
+            theme: document.getElementById('theme-select'),
+            accentColor: document.getElementById('accent-color'),
+            transparency: document.getElementById('transparency'),
+            bgAnimation: document.getElementById('bg-animation'),
+            windowAnimation: document.getElementById('window-animation'),
+            dockPosition: document.getElementById('dock-position'),
+            dockSize: document.getElementById('dock-size'),
+            systemSounds: document.getElementById('system-sounds'),
+            startupSound: document.getElementById('startup-sound'),
+            analytics: document.getElementById('analytics')
+        };
+
+        // Load saved settings
+        function loadSettings() {
+            Object.entries(settings).forEach(([key, element]) => {
+                const savedValue = localStorage.getItem(`ghostos_${key}`);
+                if (savedValue !== null) {
+                    if (element.type === 'checkbox') {
+                        element.checked = savedValue === 'true';
+                    } else {
+                        element.value = savedValue;
+                    }
+                }
+            });
+        }
+
+        // Save settings
+        function saveSettings() {
+            Object.entries(settings).forEach(([key, element]) => {
+                const value = element.type === 'checkbox' ? element.checked : element.value;
+                localStorage.setItem(`ghostos_${key}`, value);
+            });
+        }
+
+        // Add change listeners
+        Object.values(settings).forEach(element => {
+            element.addEventListener('change', () => {
+                saveSettings();
+                applySettings();
+            });
+        });
+
+        // Apply settings to the system
+        function applySettings() {
+            // Get the parent window's document
+            const parentDoc = window.parent.document;
+            const root = parentDoc.documentElement;
+            
+            // Apply accent color
+            const accentColor = settings.accentColor.value;
+            root.style.setProperty('--accent-color', accentColor);
+            
+            // Apply theme
+            if (settings.theme.value === 'light') {
+                root.style.setProperty('--background-color', '#f0f0f0');
+                root.style.setProperty('--window-color', '#ffffff');
+                root.style.setProperty('--text-color', '#000000');
+            } else {
+                root.style.setProperty('--background-color', '#1a1a1a');
+                root.style.setProperty('--window-color', '#2d2d2d');
+                root.style.setProperty('--text-color', '#ffffff');
+            }
+            
+            // Apply transparency
+            if (settings.transparency.checked) {
+                root.classList.remove('no-transparency');
+            } else {
+                root.classList.add('no-transparency');
+            }
+            
+            // Apply dock position
+            const dock = parentDoc.querySelector('.dock');
+            if (dock) {
+                dock.className = 'dock';
+                dock.classList.add(`dock-${settings.dockPosition.value}`);
+            }
+            
+            // Apply dock size
+            const dockItems = parentDoc.querySelectorAll('.dock-item img');
+            const size = settings.dockSize.value + 'px';
+            dockItems.forEach(item => {
+                item.style.width = size;
+                item.style.height = size;
+            });
+            
+            // Apply window animations
+            if (settings.windowAnimation.checked) {
+                root.classList.remove('no-animations');
+            } else {
+                root.classList.add('no-animations');
+            }
+            
+            // Apply background animation
+            const desktopLogo = parentDoc.querySelector('.desktop-logo');
+            if (desktopLogo) {
+                if (settings.bgAnimation.checked) {
+                    desktopLogo.style.animation = 'float 6s ease-in-out infinite';
+                } else {
+                    desktopLogo.style.animation = 'none';
+                }
+            }
+            
+            // Apply system sounds
+            window.parent.systemSounds = settings.systemSounds.checked;
+            
+            // Notify the system of changes
+            if (window.parent.notifications) {
+                window.parent.notifications.show('Settings updated', 'success');
+            }
+        }
+
+        // Initialize
+        loadSettings();
+        applySettings();
+    </script>
+</body>
+</html> 

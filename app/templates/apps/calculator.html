@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator - GhostOS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff9d;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .calculator {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 300px;
+        }
+
+        .display {
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            text-align: right;
+            font-size: 2em;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        button {
+            background: rgba(0,255,157,0.1);
+            border: 1px solid #00ff9d;
+            color: #00ff9d;
+            padding: 15px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: rgba(0,255,157,0.2);
+        }
+
+        .equals {
+            grid-column: span 2;
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+        
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">0</div>
+        <button onclick="clearDisplay()">C</button>
+        <button onclick="appendOperator('/')">/</button>
+        <button onclick="appendOperator('*')">×</button>
+        <button onclick="appendOperator('-')">-</button>
+        <button onclick="appendNumber(7)">7</button>
+        <button onclick="appendNumber(8)">8</button>
+        <button onclick="appendNumber(9)">9</button>
+        <button onclick="appendOperator('+')">+</button>
+        <button onclick="appendNumber(4)">4</button>
+        <button onclick="appendNumber(5)">5</button>
+        <button onclick="appendNumber(6)">6</button>
+        <button onclick="appendNumber(1)">1</button>
+        <button onclick="appendNumber(2)">2</button>
+        <button onclick="appendNumber(3)">3</button>
+        <button onclick="appendNumber(0)" class="equals">0</button>
+        <button onclick="appendNumber('.')">.</button>
+        <button onclick="calculate()" class="equals">=</button>
+    </div>
+
+    <script>
+        let display = document.querySelector('.display');
+        let currentValue = '0';
+
+        function updateDisplay() {
+            display.textContent = currentValue;
+        }
+
+        function appendNumber(num) {
+            if (currentValue === '0') currentValue = '';
+            currentValue += num;
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            currentValue += ` ${op} `;
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentValue = '0';
+            updateDisplay();
+        }
+
+        function calculate() {
+            try {
+                currentValue = eval(currentValue).toString();
+                updateDisplay();
+            } catch (e) {
+                currentValue = 'Error';
+                updateDisplay();
+                setTimeout(clearDisplay, 1000);
+            }
+        }
+    </script>
+</body>
+</html> 

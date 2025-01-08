@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhostOS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dock.css') }}">
+</head>
+<body>
+    <div class="top-bar">
+        <div class="top-bar-left">
+            <div class="ghost-menu" onclick="toggleGhostMenu()">
+                <img src="{{ url_for('static', filename='images/ghostai-icon-white.png') }}" alt="Ghost" class="ghost-icon">
+            </div>
+            <div class="menu-items">
+                <div class="menu-item" onclick="toggleMenu(this)">
+                    <span>File</span>
+                    <div class="dropdown-menu">
+                        <div class="menu-option" onclick="openApp('ghostedit')">New Text File</div>
+                        <div class="menu-option" onclick="openApp('ghostedit')">Open File...</div>
+                        <div class="menu-separator"></div>
+                        <div class="menu-option">Save</div>
+                        <div class="menu-option">Save As...</div>
+                        <div class="menu-separator"></div>
+                        <div class="menu-option">Exit</div>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="toggleMenu(this)">
+                    <span>Edit</span>
+                    <div class="dropdown-menu">
+                        <div class="menu-option">Undo</div>
+                        <div class="menu-option">Redo</div>
+                        <div class="menu-separator"></div>
+                        <div class="menu-option">Cut</div>
+                        <div class="menu-option">Copy</div>
+                        <div class="menu-option">Paste</div>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="toggleMenu(this)">
+                    <span>View</span>
+                    <div class="dropdown-menu">
+                        <div class="menu-option">Toggle Dock</div>
+                        <div class="menu-option">Toggle Full Screen</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="top-bar-right">
+            <div class="system-indicators">
+                <span class="network-indicator"></span>
+                <span class="battery-indicator"></span>
+                <span class="clock" id="clock"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="desktop">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="dock">
+        <div class="dock-container">
+            <div class="dock-item" onclick="openApp('terminal')">
+                <img src="{{ url_for('static', filename='images/terminal-icon.png') }}" alt="Terminal">
+            </div>
+            <div class="dock-item" onclick="openApp('calculator')">
+                <img src="{{ url_for('static', filename='images/calculator-icon.png') }}" alt="Calculator">
+            </div>
+            <div class="dock-item" onclick="openApp('notes')">
+                <img src="{{ url_for('static', filename='images/notes-icon.png') }}" alt="Notes">
+            </div>
+            <div class="dock-item" onclick="openApp('clock')">
+                <img src="{{ url_for('static', filename='images/clock-icon.png') }}" alt="Clock">
+            </div>
+            <div class="dock-item" onclick="openApp('minecraft')">
+                <img src="{{ url_for('static', filename='images/minecraft-icon.png') }}" alt="Minecraft">
+            </div>
+            <div class="dock-item" onclick="openApp('ghostai')">
+                <img src="{{ url_for('static', filename='images/ghostai-icon.png') }}" alt="GhostAI">
+            </div>
+            <div class="dock-item" onclick="openApp('ghostedit')">
+                <img src="{{ url_for('static', filename='images/ghostedit-icon.png') }}" alt="GhostEdit">
+            </div>
+            <div class="dock-item" onclick="openApp('settings')">
+                <img src="{{ url_for('static', filename='images/settings-icon.png') }}" alt="Settings">
+            </div>
+        </div>
+    </div>
+
+    <div class="taskbar">
+        <div class="taskbar-items">
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/terminal.js') }}"></script>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            document.getElementById('clock').textContent = time;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html> 

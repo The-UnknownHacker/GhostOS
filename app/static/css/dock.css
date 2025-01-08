@@ -1,0 +1,50 @@
+.dock {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(45, 45, 45, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.dock-container {
+    display: flex;
+    gap: 15px;
+}
+
+.dock-item {
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.dock-item:hover {
+    transform: scale(1.2);
+}
+
+.dock-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.dock-item.has-window::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--accent-color);
+    border-radius: 50%;
+}
+
+.dock-item.minimized::after {
+    background: rgba(0, 255, 157, 0.5);
+} 

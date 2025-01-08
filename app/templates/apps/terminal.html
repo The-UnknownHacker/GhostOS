@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal - GhostOS</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            color: #00ff9d;
+            font-family: monospace;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .terminal-container {
+            height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #terminal {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-output {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-bottom: 10px;
+        }
+
+        .terminal-input {
+            position: sticky;
+            bottom: 0;
+            background: #1a1a1a;
+            padding: 5px 0;
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        .terminal-container {
+            scroll-behavior: smooth;
+        }
+
+        .terminal-output div {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .prompt {
+            color: #00ff9d;
+            user-select: none;
+            padding-right: 8px;
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+        
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-container">
+        <div id="terminal"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/terminal.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const terminal = new Terminal(document.getElementById('terminal'));
+        });
+    </script>
+</body>
+</html> 

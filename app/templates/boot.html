@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhostOS - Booting</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a1a;
+            color: #00ff9d;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #1a1a1a;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .boot-screen.fade-out {
+            opacity: 0;
+            transform: scale(1.1);
+        }
+
+        .boot-container {
+            text-align: center;
+            transform: translateY(-10%);
+            transition: transform 0.5s ease;
+        }
+
+        .ghost-logo {
+            width: 180px;
+            height: 180px;
+            margin-bottom: 40px;
+            animation: pulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(0, 255, 157, 0.3));
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 30px rgba(0, 255, 157, 0.5)); }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 3px solid rgba(0, 255, 157, 0.1);
+            border-top: 3px solid #00ff9d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.2);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            font-family: monospace;
+            font-size: 14px;
+            margin-top: 20px;
+            height: 20px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+
+        .status.fade {
+            opacity: 0;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 200px;
+            height: 2px;
+            background: rgba(0, 255, 157, 0.1);
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: #00ff9d;
+            animation: progress 5s linear forwards;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+        }
+
+        @keyframes progress {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="boot-screen">
+        <div class="boot-container">
+            <img src="{{ url_for('static', filename='images/ghostai-icon.png') }}" alt="GhostOS" class="ghost-logo">
+            <div class="spinner"></div>
+            <div class="progress-bar"></div>
+            <div class="status" id="status">Initializing system...</div>
+        </div>
+    </div>
+
+    <script>
+        const statusMessages = [
+            'Initializing system...',
+            'Loading core utilities...',
+            'Starting system services...',
+            'Configuring network interfaces...',
+            'Loading system preferences...',
+            'Initializing window manager...',
+            'Starting desktop environment...',
+            'Loading user settings...',
+            'Preparing workspace...',
+            'Almost there...'
+        ];
+
+        const status = document.getElementById('status');
+        let currentMessage = 0;
+
+        function updateStatus() {
+            status.classList.add('fade');
+            setTimeout(() => {
+                status.textContent = statusMessages[currentMessage];
+                status.classList.remove('fade');
+                currentMessage = (currentMessage + 1) % statusMessages.length;
+            }, 300);
+        }
+
+        // Update status message every 500ms
+        const statusInterval = setInterval(updateStatus, 500);
+
+        // After 5 seconds, fade out and redirect
+        setTimeout(() => {
+            clearInterval(statusInterval);
+            document.querySelector('.boot-screen').classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = '/welcome';
+            }, 800);
+        }, 5000);
+
+        // Play startup sound if enabled
+        const startupSound = localStorage.getItem('ghostos_startupSound');
+        if (startupSound === 'true') {
+            const startup = new Audio('/static/sounds/startup.mp3');
+            startup.play().catch(() => {});
+        }
+    </script>
+</body>
+</html> 

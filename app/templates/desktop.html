@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="desktop-background">
+    <img src="{{ url_for('static', filename='images/ghostai-icon.png') }}" alt="GhostOS" class="desktop-logo">
+</div>
+<div class="windows-container">
+</div>
+
+<style>
+    .window {
+        position: absolute;
+        background: #1a1a1a;
+        border: 1px solid #00ff9d;
+        border-radius: 8px;
+        min-width: 300px;
+        min-height: 200px;
+        box-shadow: 0 0 20px rgba(0, 255, 157, 0.1);
+        transition: box-shadow 0.3s ease;
+        will-change: transform;
+        transform: translate3d(0, 0, 0);
+        user-select: none; 
+    }
+
+    .window-titlebar {
+        padding: 8px 12px;
+        background: rgba(0, 255, 157, 0.1);
+        border-bottom: 1px solid #00ff9d;
+        border-radius: 8px 8px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: grab;
+    }
+
+    .window-titlebar:active {
+        cursor: grabbing;
+    }
+</style>
+
+<script>
+    function makeWindowDraggable(window) {
+        const titlebar = window.querySelector('.window-titlebar');
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        titlebar.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+
+        function dragStart(e) {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+
+            if (e.target === titlebar || e.target.parentNode === titlebar) {
+                isDragging = true;
+                window.style.zIndex = getTopZIndex() + 1;
+                window.style.boxShadow = '0 0 30px rgba(0, 255, 157, 0.2)';
+                
+                const rect = window.getBoundingClientRect();
+                currentX = rect.left;
+                currentY = rect.top;
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                
+                const newX = currentX + (e.clientX - initialX);
+                const newY = currentY + (e.clientY - initialY);
+                
+                const maxX = window.parentElement.clientWidth - window.offsetWidth;
+                const maxY = window.parentElement.clientHeight - window.offsetHeight;
+                
+                xOffset = Math.min(Math.max(0, newX), maxX);
+                yOffset = Math.min(Math.max(0, newY), maxY);
+                
+                window.style.transform = `translate3d(${xOffset}px, ${yOffset}px, 0)`;
+            }
+        }
+
+        function dragEnd() {
+            if (isDragging) {
+                isDragging = false;
+                window.style.boxShadow = '0 0 20px rgba(0, 255, 157, 0.1)';
+                
+                currentX = xOffset;
+                currentY = yOffset;
+            }
+        }
+
+        function getTopZIndex() {
+            const windows = document.querySelectorAll('.window');
+            let maxZ = 0;
+            windows.forEach(w => {
+                const z = parseInt(getComputedStyle(w).zIndex) || 0;
+                maxZ = Math.max(maxZ, z);
+            });
+            return maxZ;
+        }
+    }
+
+    document.querySelectorAll('.window').forEach(makeWindowDraggable);
+</script>
+{% endblock %} 
