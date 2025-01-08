@@ -1,3 +1,11 @@
+// Then define the playSound function
+function playSound(soundName) {
+    if (systemSounds[soundName]) {
+        systemSounds[soundName].currentTime = 0;
+        systemSounds[soundName].play().catch(err => console.log('Audio play failed:', err));
+    }
+}
+
 function openApp(appName) {
     const windowsContainer = document.querySelector('.windows-container');
     
@@ -80,7 +88,7 @@ function restoreWindow(appName) {
 }
 
 function closeWindow(window) {
-    playSound('click');
+    playSound('close');
     const dockIcon = document.querySelector(`.dock-item[data-window-id="${window.id}"]`);
     if (dockIcon) {
         dockIcon.classList.remove('has-window');
@@ -397,44 +405,13 @@ class VolumeControl {
     setVolume(value) {
         this.volume = value;
         const icon = document.querySelector('.volume-icon');
-        icon.textContent = value === 0 ? '🔇' : value < 0.5 ? '🔉' : '🔊';
-        
-        Object.values(sounds).forEach(sound => {
-            sound.volume = value;
-        });
+        icon.textContent = value === 0 ? '🔇' : value < 0.5 ? '��' : '🔊';
     }
 }
 
 const volumeControl = new VolumeControl(); 
 
-let systemSounds = true;
-
-const sounds = {
-    click: new Audio('/static/sounds/click.mp3'),
-    notification: new Audio('/static/sounds/notification.mp3'),
-    error: new Audio('/static/sounds/error.mp3'),
-    startup: new Audio('/static/sounds/startup.mp3')
-};
-
-Object.values(sounds).forEach(sound => {
-    sound.load();
-});
-
-function playSound(soundName) {
-    if (systemSounds && sounds[soundName]) {
-        const sound = sounds[soundName].cloneNode();
-        sound.volume = volumeControl ? volumeControl.volume : 1;
-        sound.play().catch(() => {});
-    }
-} 
-
 document.addEventListener('DOMContentLoaded', () => {
-    const startupSound = localStorage.getItem('ghostos_startupSound');
-    if (startupSound === 'true') {
-        const startup = new Audio('/static/sounds/startup.mp3');
-        startup.play().catch(() => {});
-    }
-    
     const theme = localStorage.getItem('ghostos_theme');
     if (theme) {
         document.documentElement.className = theme;
@@ -449,8 +426,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (animations === 'false') {
         document.documentElement.classList.add('no-animations');
     }
-    
-    systemSounds = localStorage.getItem('ghostos_systemSounds') !== 'false';
 }); 
 
 document.addEventListener('click', (e) => {
