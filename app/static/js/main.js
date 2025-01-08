@@ -1,10 +1,3 @@
-// Then define the playSound function
-function playSound(soundName) {
-    if (systemSounds[soundName]) {
-        systemSounds[soundName].currentTime = 0;
-        systemSounds[soundName].play().catch(err => console.log('Audio play failed:', err));
-    }
-}
 
 function openApp(appName) {
     const windowsContainer = document.querySelector('.windows-container');
@@ -69,7 +62,6 @@ function minimizeWindow(window) {
     
     window.classList.add('minimized');
     dockIcon.classList.add('minimized');
-    playSound('click');
 }
 
 function restoreWindow(appName) {
@@ -88,7 +80,6 @@ function restoreWindow(appName) {
 }
 
 function closeWindow(window) {
-    playSound('close');
     const dockIcon = document.querySelector(`.dock-item[data-window-id="${window.id}"]`);
     if (dockIcon) {
         dockIcon.classList.remove('has-window');
@@ -120,7 +111,6 @@ document.querySelectorAll('.dock-item').forEach(item => {
 });
 
 function toggleMaximize(window) {
-    playSound('click');
     if (window.classList.contains('maximized')) {
         window.style.transform = `translate(${window.dataset.prevLeft || '50px'}, ${window.dataset.prevTop || '50px'})`;
         window.style.width = window.dataset.prevWidth || '800px';
@@ -220,7 +210,6 @@ function makeResizable(element) {
 }
 
 function toggleMenu(menuItem) {
-    playSound('click');
     const wasActive = menuItem.classList.contains('active');
     
     document.querySelectorAll('.menu-item').forEach(item => {
@@ -233,7 +222,6 @@ function toggleMenu(menuItem) {
 }
 
 function toggleGhostMenu() {
-    playSound('click');
     const menu = document.querySelector('.ghost-menu');
     menu.classList.toggle('active');
 }
@@ -371,7 +359,6 @@ class NotificationSystem {
             notification.classList.add('fade-out');
             setTimeout(() => notification.remove(), 300);
         }, 5000);
-        playSound(type === 'error' ? 'error' : 'notification');
     }
 }
 
@@ -387,7 +374,7 @@ class VolumeControl {
         const control = document.createElement('div');
         control.className = 'volume-control';
         control.innerHTML = `
-            <div class="volume-icon" onclick="playSound('click'); this.nextElementSibling.classList.toggle('show')">🔊</div>
+            <div class="volume-icon"; this.nextElementSibling.classList.toggle('show')">🔊</div>
             <div class="volume-slider">
                 <input type="range" min="0" max="100" value="100">
             </div>
@@ -397,7 +384,6 @@ class VolumeControl {
         
         const slider = control.querySelector('input');
         slider.addEventListener('input', (e) => {
-            playSound('click');
             this.setVolume(e.target.value / 100);
         });
     }
@@ -450,6 +436,5 @@ document.addEventListener('click', (e) => {
 
     if (e.target.matches(clickableElements.join(',')) || 
         e.target.closest(clickableElements.join(','))) {
-        playSound('click');
     }
 }); 
