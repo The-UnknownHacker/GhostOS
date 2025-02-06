@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GhostEngine</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+            --input-bg: #fff;
+            --button-bg: #007bff;
+            --button-hover: #0056b3;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #181818;
+            --text-color: #f4f4f4;
+            --input-bg: #333;
+            --button-bg: #0d6efd;
+            --button-hover: #0a58ca;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .search-container {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .search-box {
+            margin: 20px auto;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px 15px;
+            font-size: 1rem;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .search-box button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            background-color: var(--button-bg);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: var(--button-hover);
+        }
+
+        .theme-toggle {
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .results-container {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        .result {
+            background-color: var(--bg-color);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .result a {
+            color: var(--button-bg);
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+
+        .result a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h1>GhostEngine</h1>
+        <form class="search-box" onsubmit="searchQuery(event)">
+            <input type="text" id="query" placeholder="Search something..." required>
+            <button type="submit">Search</button>
+        </form>
+        <div class="theme-toggle" onclick="toggleTheme()">🌙 Toggle Dark Mode</div>
+    </div>
+
+    <div class="results-container" id="results"></div>
+
+    <script>
+        // Handle search query
+        async function searchQuery(event) {
+            event.preventDefault();
+            const query = document.getElementById("query").value;
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = "<p>Loading...</p>";
+
+            try {
+                const response = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json`);
+                const data = await response.json();
+
+                if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+                    resultsContainer.innerHTML = "";
+                    data.RelatedTopics.forEach(item => {
+                        if (item.Result) {
+                            const resultElement = document.createElement("div");
+                            resultElement.classList.add("result");
+                            resultElement.innerHTML = `
+                                <a href="${item.FirstURL}" target="_blank">${item.Text}</a>
+                            `;
+                            resultsContainer.appendChild(resultElement);
+                        }
+                    });
+                } else {
+                    resultsContainer.innerHTML = "<p>No results found.</p>";
+                }
+            } catch (error) {
+                resultsContainer.innerHTML = "<p>Error fetching results.</p>";
+            }
+        }
+
+        // Toggle Dark Mode
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            document.body.setAttribute("data-theme", newTheme);
+        }
+
+        // Set initial theme based on user preference
+        const userPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (userPrefersDark) {
+            document.body.setAttribute("data-theme", "dark");
+        }
+    </script>
+</body>
+</html>
